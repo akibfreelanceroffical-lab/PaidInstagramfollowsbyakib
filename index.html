@@ -119,23 +119,13 @@
     document.addEventListener('DOMContentLoaded', function () {
       const lastVisit = localStorage.getItem('lastVisitDate');
       const today = new Date().toDateString();
-      let attempts = parseInt(localStorage.getItem('passAttempts') || '0', 10);
 
-      if (lastVisit === today && attempts >= 5) {
-        document.body.innerHTML = `
-          <div id="accessBlock">
-            <h1>Access Blocked</h1>
-            <p>Too many incorrect password attempts. You are blocked for 1 day. Please try again tomorrow.</p>
-          </div>`;
-        return;
-      }
-
-      if (lastVisit === today && attempts < 5) {
+      if (lastVisit === today) {
         // Show block message with password input
         document.body.innerHTML = `
           <div id="accessBlock">
             <h1>Access Restricted</h1>
-            <p>Sorry 😢 Only one person can use this service per day. Please come back tomorrow or unlock with the password below.</p>
+            <p>Sorry 😢 Only one person can use this service per day. Please come back tomorrow.</p>
             <p>If you have the password, enter it below to unlock:</p>
             <input id="passwordInput" type="password" placeholder="Enter password" />
             <button id="unlockBtn">Unlock</button>
@@ -148,27 +138,13 @@
 
           if (password === correctPassword) {
             localStorage.removeItem('lastVisitDate');
-            localStorage.removeItem('passAttempts');
             location.reload();
           } else {
-            attempts += 1;
-            localStorage.setItem('passAttempts', attempts.toString());
-            if (attempts >= 5) {
-              document.body.innerHTML = `
-                <div id="accessBlock">
-                  <h1>Access Blocked</h1>
-                  <p>Too many incorrect password attempts. You are blocked for 1 day. Please try again tomorrow.</p>
-                </div>`;
-            } else {
-              const errorMsg = document.getElementById('errorMsg');
-              errorMsg.style.display = 'block';
-              errorMsg.innerText = \`Incorrect password. Attempts left: \${5 - attempts}\`;
-            }
+            document.getElementById('errorMsg').style.display = 'block';
           }
         });
       } else {
         localStorage.setItem('lastVisitDate', today);
-        localStorage.removeItem('passAttempts');
       }
     });
   </script>
@@ -229,3 +205,6 @@
   <footer>© 2025 Instagram Growth | Secure & Fast Delivery</footer>
 </body>
 </html>
+
+
+
